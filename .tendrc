@@ -1,0 +1,13 @@
+ignoreHidden=true
+
+[js]
+directory=./src/lib
+command=sh build/js.sh
+restart=true
+start=true
+
+[html]
+directory=./src/html
+command=sh build/html.sh
+restart=true
+start=true

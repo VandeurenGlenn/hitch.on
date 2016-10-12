@@ -1,0 +1,60 @@
+{
+  "name": "hitch.on",
+  "version": "0.0.0",
+  "description": "Connect with each other",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ./app",
+    "start-dev": "npm run build && electron ./app/index.js",
+    "build": "sh build/build.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://vandeurenglenn@gmail.com"
+  },
+  "keywords": [
+    "remote",
+    "connect",
+    "hitch",
+    "on",
+    "hitchon",
+    "hitch.on",
+    "meet",
+    "meeting"
+  ],
+  "author": "vandeurenglenn <vandeurenglenn@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "connect": "^3.5.0",
+    "keypress": "^0.2.1",
+    "node-mouse": "0.0.2",
+    "node-static": "^0.7.8",
+    "open": "0.0.5",
+    "openport": "0.0.4",
+    "portfinder": "^1.0.7",
+    "rfb2": "0.0.11",
+    "robotjs": "^0.4.4",
+    "socket.io": "^1.4.8"
+  },
+  "devDependencies": {
+    "babel-plugin-external-helpers": "^6.8.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-es2015-rollup": "^1.2.0",
+    "electron": "^1.4.1",
+    "eslint": "^3.7.1",
+    "eslint-plugin-html": "^1.5.3",
+    "rollup": "^0.36.0",
+    "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-json": "^2.0.2"
+  },
+  "eslintConfig": {
+    "globals": {
+      "hitchon": true
+    },
+    "env": {
+      "browser": true,
+      "node": true
+    }
+  }
+}
