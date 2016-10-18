@@ -1,0 +1,38 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<dom-module id="hitch-copy-code">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        cursor: pointer;
+        color: var(--paper-orange-700);
+        padding: 8px;
+        box-sizing: border-box;
+      }
+    </style>
+    <content></content>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'hitch-copy-code',
+
+        properties: {
+          code: String
+        },
+
+        ready: function() {
+          this.addEventListener('tap', this.copy.bind(this));
+        },
+
+        copy: function() {
+          // TODO: check if running electron, find other method for web app (web notification?).
+          hitchon.clipboard.copy(this.code, 'client-code');
+          this.dispatchEvent(new CustomEvent('client-code-copied'));
+        }
+      });
+    })();
+  </script>
+</dom-module>

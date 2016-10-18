@@ -1,0 +1,95 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="collab-upload.html">
+
+<dom-module id="collab-action">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .screen-item {
+        display: flex;
+        flex-direction: row;
+        padding: 16px 32px;
+        box-sizing: border-box;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      }
+      @media (min-width: 960px) {
+        .screen-item {
+          width: 50%;
+          float: left;
+        }
+      }
+    </style>
+
+    <template is="dom-if" if="[[_computeTemplate(name, 'screen', 'window')]]">
+      <div class="screen-item" on-tap="_onScreenItemTap">
+        <img src="[[_computeThumbnail(action.thumbnail)]]"/>
+        <span class="name" title="[[_computeTitle(action.name)]]">[[_computeName(action.name)]]</span>
+      </div>
+    </template>
+
+    <template is="dom-if" if="[[_computeTemplate(name, 'webcam')]]">
+      <div class="cam-item">
+        <span>comming soon ...</span>
+        <!-- <span class="name">[[action.name]]</span> -->
+      </div>
+    </template>
+
+    <template is="dom-if" if="[[_computeTemplate(name, 'file')]]">
+      <collab-upload></collab-upload>
+    </template>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'collab-action',
+
+        properties: {
+          name: String,
+          action: {
+            type: Object,
+            observer: '_actionChanged'
+          }
+        },
+
+        _actionChanged: function(action) {
+          this.currentAction = this.action.name;
+        },
+
+        _computeTemplate: function(name, wanted, wanted2) {
+          if (name === wanted || name === wanted2) {
+            return true;
+          }
+          return false;
+        },
+
+        _computeThumbnail: function(thumbnail) {
+          return thumbnail.toDataURL();
+        },
+
+        _computeName: function(name) {
+          if (name.length > 11) {
+            return name.replace(name.slice(11, name.length), '...')
+          }
+          return name;
+        },
+
+        _computeTitle: function(name) {
+          if (name.length > 11) {
+            return name
+          }
+          return '';
+        },
+
+        _onScreenItemTap: function(event) {
+          let id = event.model.__data__.action.id;
+          document.dispatchEvent(new CustomEvent('screen-select', {detail: id}))
+        }
+      });
+    })();
+  </script>
+</dom-module>

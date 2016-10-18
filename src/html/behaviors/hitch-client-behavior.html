@@ -1,0 +1,52 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script>
+var Hitch = Hitch || {};
+Hitch.ClientBehavior = {
+  properties: {
+    code: {
+      type: Number,
+      value: null
+    },
+
+    streaming: {
+      type: Boolean,
+      reflectToAttribute: true,
+      value: false
+    },
+
+    loading: {
+      type: Boolean,
+      value: false
+    }
+  },
+
+  get hitchon() {
+    return window.hitchon;
+  },
+
+  get client() {
+    return this.hitchon.client;
+  },
+
+  get videoElement() {
+    return this.root.querySelector('video');
+  },
+
+  startClient: function() {
+    this.set('loading', true);
+    this.client.start(this.code, '0.tcp.ngrok.io');
+    document.addEventListener('capturer-update', this._onCapturerUpdate.bind(this));
+  },
+
+  _onCapturerUpdate: function(event) {
+    this.videoElement.addEventListener('loadeddata', this.onstreamReady());
+    this.videoElement.src = event.detail;
+  },
+
+  onstreamReady: function() {
+    this.set('loading', false);
+    this.set('streaming', true);
+  }
+};
+</script>

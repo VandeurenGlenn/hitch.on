@@ -1,0 +1,47 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<dom-module id="hitch-action-toolbar">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 64px;
+        padding: 0 0.6em;
+        box-sizing: border-box;
+      }
+      :host(.small) {
+        height: 40px;
+      }
+    </style>
+    <content></content>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'hitch-action-toolbar',
+
+        properties: {
+          for: {
+            type: String,
+            observer: '_forChanged'
+          }
+        },
+
+        _forChanged: function(change) {
+          if (change === 'host') {
+            this.classList.add('small');
+            return;
+          } else if (this.classList.contains('small')) {
+            this.classList.remove('small');
+            return
+          }
+          return;
+        }
+
+      });
+    })();
+  </script>
+</dom-module>

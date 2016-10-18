@@ -1,0 +1,44 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<dom-module id="home-view">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+
+    <div class="content">
+      <paper-button name="client" raised on-tap="go" title="Join a session">Join</paper-button>
+      <paper-icon-button name="host" raised on-tap="go" icon="screen-share" title="Start new sceen share session"></paper-icon-button>
+    </div>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'home-view',
+
+        get parent() {
+          return document.querySelector('hitch-app');
+        },
+
+        go: function(event) {
+          var view = event.target.getAttribute('name');
+          this.parent.go(view);
+        }
+      });
+    })();
+  </script>
+</dom-module>

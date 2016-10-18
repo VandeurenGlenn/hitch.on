@@ -1,0 +1,96 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<dom-module id="collab-context-menu">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .menu-container {
+        position: fixed;
+        border-top: 1px solid #e5e5e5;
+      }
+      .menu-container {
+        opacity: 0;
+        height: 0;
+        transform: scaleY(0);
+        background: #FEFEFE;
+        @apply(--shadow-elevation-2dp);
+      }
+      :host([opened]) {
+        @apply(--shadow-elevation-2dp);
+      }
+      :host([opened]) .menu-container {
+        opacity: 1;
+        transform: scaleY(1);
+        height: auto;
+        transition: transform ease-in 32ms;
+      }
+    </style>
+    <paper-icon-button icon="[[icon]]"></paper-icon-button>
+    <div class="menu-container">
+      <content></content>
+    </div>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'collab-context-menu',
+
+        properties: {
+          icon: {
+            type: String,
+            value: 'menu'
+          },
+
+          opened: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          }
+        },
+
+        get _menu() {
+          return this.root.querySelector('.menu-container');
+        },
+
+        ready: function() {
+          this.addEventListener('tap', this.toggleOpened.bind(this));
+        },
+
+        toggleOpened: function(event) {
+          var position = this._calculatePosition(event);
+          if (this.opened) {
+            this.close();
+          } else {
+            this.open(event.detail.x, event.detail.y);
+          }
+        },
+
+        open: function(x, y) {
+          this.set('opened', true);
+          var menuHeight = this._menu.offsetHeight;
+          this.set('opened', false);
+          console.log(y + menuHeight);
+          if ((y + menuHeight) > window.outerHeight) {
+            y -= menuHeight;
+            this._menu.style.top = y + 'px';
+          } else {
+            this._menu.style.top = y + 'px';
+          }
+          this._menu.style.left = x + 'px';
+          this.set('opened', true);
+        },
+
+        close: function() {
+          this.set('opened', false);
+        },
+
+        _calculatePosition: function(ev) {
+          console.log(ev.x, ev.y);
+        }
+      });
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,80 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+
+<dom-module id="collab-client-connecting">
+  <template>
+    <style>
+      :host {
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        position: absolute;
+        vertical-align: middle;
+        top: 0;
+        left: 0;
+        padding: 0 12px;
+        height: 48px;
+        overflow: hidden;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        /* NOTE: Both values are needed, since some phones require the value to be `transparent`. */
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-tap-highlight-color: transparent;
+        background: #FEFEFE;
+        border-radius: 3px;
+        @apply(--shadow-elevation-2dp);
+        pointer-events: none;
+        opacity: 0;
+      }
+      :host([opened]) {
+        opacity: 1;
+      }
+      h1 {
+        font-size: 14px;
+        font-weight: 500;
+        padding-left: 12px;
+      }
+    </style>
+    <template is="dom-if" if="[[connecting]]">
+      <paper-spinner active></paper-spinner>
+      <h1>WAITING ON CLIENTS</h1>
+    </template>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'collab-client-connecting',
+
+        properties: {
+          connecting: {
+            type: Boolean,
+            observer: '_connectingChanged'
+          },
+
+          opened: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          }
+        },
+        _connectingChanged: function(change) {
+          if (change) {
+            this.set('opened', true);
+          } else {
+            var h1 = document.createElement('h1');
+            h1.innerHTML = 'CLIENT JOINED!';
+            this.root.appendChild(h1);
+            setTimeout(function () {
+              this.root.removeChild(h1);
+              this.set('opened', false);
+            }.bind(this), 2000);
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

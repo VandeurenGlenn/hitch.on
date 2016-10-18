@@ -1,0 +1,73 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../../behaviors/hitch-client-behavior.html">
+
+<dom-module id="client-view">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      video {
+        pointer-events: none;
+        opacity: 0;
+      }
+      :host([streaming]) video {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: all;
+        opacity: 1;
+        transition: opacity ease-in 16ms;
+      }
+      :host([streaming]) {
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+    </style>
+
+    <template is="dom-if" if="[[loading]]">
+      <paper-spinner active></paper-spinner>
+    </template>
+
+    <template is="dom-if" if="[[_computeShowConnect(streaming, loading)]]">
+      <input type="text" name="code" value="{{code::change}}">
+      <paper-button raised disabled="[[_computeConnectDisabled(code)]]" on-tap="startClient">connect</paper-button>
+    </template>
+
+    <video autoplay>
+
+    </video>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'client-view',
+        behaviors: [Hitch.ClientBehavior],
+
+        _computeConnectDisabled: function(code) {
+          if (code) {
+            return false;
+          }
+          return true;
+        },
+
+        _computeShowConnect: function(streaming, loading) {
+          if (loading || streaming) {
+            return false;
+          }
+          return true;
+        }
+      });
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<dom-module id="collab-menu">
+  <template>
+    <style>
+      :host {
+        display: block;
+        background: #FEFEFE;
+        height: 48px;
+        /*padding: */
+      }
+    </style>
+    menu
+    <div class="menu-container">
+      <slot></slot>
+    </div>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+      Polymer({
+        is: 'collab-menu',
+        properties: {
+          opened: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          }
+        },
+
+        attached: function() {
+          this.addEventListener('tap', this._taphandler.bind(this));
+        },
+
+        _taphandler: function(event) {
+          console.log(event);
+          if (this.opened) {
+            this.set('opened', false);
+          } else {
+            this.set('opened', true);
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

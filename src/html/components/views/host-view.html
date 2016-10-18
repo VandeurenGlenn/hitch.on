@@ -1,0 +1,167 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../collab/collab-board.html">
+<link rel="import" href="../collab/collab-client-connecting.html">
+
+<dom-module id="host-view">
+  <template>
+    <style>
+      :host {
+        display: block;
+        flex-direction: column;
+        overflow-y: hidden;
+        height: 100%;
+      }
+    </style>
+
+    <collab-client-connecting connecting="[[connecting]]"></collab-client-connecting>
+    <template is="dom-if" if="[[serverRunning]]">
+      <collab-board screen-sources="[[screenSources]]" window-sources="[[windowSources]]" sources-query="{{sourcesQuery}}"></collab-board>
+    </template>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'host-view',
+        properties: {
+
+          class: {
+            type: String
+          },
+
+          serverRunning: {
+            type: Boolean,
+            value: false
+          },
+
+          startingServer: {
+            type: Boolean,
+            value: false
+          },
+
+          clientReady: {
+            type: Boolean,
+            value: false
+          },
+
+          connecting: {
+            type: Boolean,
+            value: false
+          },
+
+          screenSources: {
+            type: Array,
+            value: []
+          },
+
+          windowSources: {
+            type: Array,
+            value: []
+          },
+
+          sourcesQuery: {
+            type: Array,
+            notify: true,
+            value: function() {
+              return [];
+            }
+          }
+        },
+
+        observers: [
+          '_run(class, serverRunning, startingServer)'
+        ],
+
+        get server() {
+          return hitchon.server;
+        },
+
+        get desktopCapturer() {
+          return hitchon.desktopCapturer;
+        },
+
+        attached: function() {
+          document.addEventListener('client-ready', this._onClientReady.bind(this));
+          document.addEventListener('screen-select', this._onSCreenSelect.bind(this));
+        },
+
+        detached: function() {
+          document.removeEventListener('client-ready', this._onClientReady.bind(this));
+          document.removeEventListener('screen-select', this._onSCreenSelect.bind(this));
+        },
+
+        _run:function(cls, serverRunning, startingServer) {
+          this.startCapturing();
+          if (cls && cls === 'iron-selected' && !serverRunning && !startingServer) {
+            this.set('startingServer', true);
+            this.startServer().then((url) => {
+              let clientCode = url.replace('tcp://0.tcp.ngrok.io:', '');
+              document.dispatchEvent(new CustomEvent('hitch-session-code-change', {detail: clientCode}));
+
+              this.set('connecting', true);
+              this.set('serverRunning', true);
+            });
+          } else if (cls && cls === 'has-screen') {
+
+          }
+          return;
+        },
+
+        _computeShowCode: function(code, connecting) {
+          if (code && connecting) {
+            return true;
+          }
+          return false;
+        },
+
+        startServer: function() {
+          return new Promise((resolve, reject) => {
+            try {
+              window.hitchon.server.start().then((url) => {
+                resolve(url);
+              });
+            } catch (err) {
+              reject(err);
+            }
+          });
+        },
+
+        startCapturing: function() {
+          this.desktopCapturer.getSources(['screen']).then((sources) => {
+            this.screenSources = sources;
+          });
+
+          this.desktopCapturer.getSources(['window']).then((sources) => {
+            this.windowSources = sources;
+          });
+        },
+
+        _onClientReady: function() {
+          this.clientReady = true;
+          this.set('connecting', false);
+          if (this.sourcesQuery) {
+            this.sourcesQuery.forEach(function(source) {
+              console.log(source);
+              this._notifyScreenSelectUpdate(source);
+            }.bind(this));
+            this.set('sourcesQuery', null);
+          }
+        },
+
+        _notifyScreenSelectUpdate: function(_screen) {
+          document.dispatchEvent(new CustomEvent('screen-select-update', {detail: _screen}));
+        },
+
+        _onSCreenSelect: function(event) {
+          if (this.clientReady) {
+            this._notifyScreenSelectUpdate(event.detail);
+          } else {
+            this.push('sourcesQuery', event.detail);
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

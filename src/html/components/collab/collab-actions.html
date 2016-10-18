@@ -1,0 +1,87 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<!-- collab elements -->
+<link rel="import" href="collab-action.html">
+
+<dom-module id="collab-actions">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: absolute;
+        bottom: 48px;
+        left: 0;
+        right: 0;
+        background: #FEFEFE;
+        border: 1px solid rgba(0, 0, 0, 0.24);
+      }
+      iron-pages {
+        border-top: 1px solid rgba(0, 0, 0, 0.24);
+      }
+    </style>
+    <template is="dom-if" if="[[action]]">
+      <paper-icon-button icon="close" on-tap="close"></paper-icon-button>
+      <iron-pages selected="[[action]]" attr-for-selected="name">
+        <template is="dom-repeat" items="[[actions]]" as="action">
+          <section name="[[action.name]]">
+            <template is="dom-if" if="[[!_computeHasItems(action.items)]]">
+              <collab-action name="[[action.name]]"></collab-action>
+            </template>
+            <template is="dom-if" if="[[_computeHasItems(action.items)]]">
+              <template is="dom-repeat" items="[[action.items]]">
+                <collab-action name="[[action.name]]" action="[[item]]"></collab-action>
+              </template>
+            </template>
+          </section>
+        </template>
+      </iron-pages>
+    </template>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'collab-actions',
+
+        properties: {
+          action: {
+            type: String,
+            value: null
+          },
+          actions: Array
+        },
+
+        attached: function() {
+          this.addEventListener('tap', this._taphandler.bind(this));
+        },
+
+        _taphandler: function(event) {
+          if (this.action) {
+            this.close();
+          }
+        },
+
+        _computeTemplate: function(name, wanted) {
+          if (name === wanted) {
+            return true;
+          }
+          return false;
+        },
+
+        _computeHasItems: function(items) {
+          if (items.length > 0) {
+            return true;
+          }
+          return false;
+        },
+
+        close: function() {
+          this.dispatchEvent(new CustomEvent('collab-actions-closed'));
+          this.set('action', null);
+        }
+      });
+    })();
+  </script>
+</dom-module>

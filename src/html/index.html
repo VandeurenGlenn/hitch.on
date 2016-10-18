@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <title>Hitch.on</title>
+    <meta name="description" content="">
+
+    <!-- Mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Chrome / Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="black">
+    <link rel="icon" href="icon.png">
+
+    <!-- Safari / iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png">
+
+    <!-- Load Web Components when not supported-->
+    <script>
+      // Setup Polymer options
+      window.Polymer = {
+        dom: 'shadow',
+        lazyRegister: true
+      };
+      var webComponentsSupported = ('registerElement' in document
+          && 'import' in document.createElement('link')
+          && 'content' in document.createElement('template'));
+
+      if (!webComponentsSupported) {
+        var script = document.createElement('script');
+        script.src = 'bower_components/webcomponentsjs/webcomponents-lite.js';
+        document.head.appendChild(script);
+      }
+    </script>
+
+    <link rel="import" href="components/ux/splash-screen.html">
+
+    <link rel="import" href="components/hitch-app.html">
+
+  </head>
+  <style>
+    html, body {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: 0;
+    }
+  </style>
+  <body>
+    <hitch-app></hitch-app>
+    <splash-screen></splash-screen>
+  </body>
+  <script async>
+    var app = document.querySelector('hitch-app');
+    var splash = document.querySelector('splash-screen');
+    app.addEventListener('load-complete', function() {
+      splash.set('show', false);
+    });
+    require('./../renderer');
+  </script>
+</html>

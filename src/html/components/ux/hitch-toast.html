@@ -1,0 +1,81 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<dom-module id="hitch-toast">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        position: fixed;
+        bottom: 16px;
+        left: 16px;
+        padding: 0.6em 0.8em;
+        box-sizing: border-box;
+        transform: translateY(102%);
+        opacity: 0;
+        z-index: 100;
+        pointer-events: none;
+        @apply(--shadow-elevation-4dp);
+        background: #FEFEFE;
+      }
+      :host([showing]) {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+        transition: transform ease-in 0.4s;
+      }
+    </style>
+    <content></content>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'hitch-toast',
+
+        properties: {
+          showing: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
+
+          timeout: {
+            type: Number,
+            value: 15000
+          }
+        },
+
+        show: function(text, dismiss, timeout) {
+          if (typeof dismiss === 'number') {
+            timeout = dismiss;
+            dismiss = undefined;
+          }
+          if (text) {
+            var p = document.createElement('p');
+            p.innerHTML = text;
+            this.appendChild(p);
+          }
+
+          if (dismiss) {
+            var span = document.createElement('span');
+            span.innerHTML = 'ok';
+            span.title = 'closes the notification';
+            span.class = 'toast-action';
+            span.onTap = document.dispatchEvent(new CustomEvent('toast-action'));
+            this.appendChild(span);
+          }
+          this.set('showing', true);
+          this.async(function() {
+            this.set('showing', false);
+          }, timeout || this.timeout);
+        },
+
+        hide: function() {
+          this.set('showing', false);
+        }
+      });
+    })();
+  </script>
+</dom-module>

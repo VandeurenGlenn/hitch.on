@@ -1,0 +1,248 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<!-- import home-view by default, the rest will be imported dynamically -->
+<link rel="import" href="views/home-view.html">
+<!-- ui components -->
+<link rel="import" href="ui/hitch-icons.html">
+<!-- ux components -->
+<link rel="import" href="ux/hitch-share-code.html">
+<link rel="import" href="ux/hitch-action-toolbar.html">
+<link rel="import" href="ux/hitch-toast.html">
+<link rel="import" href="ux/hitch-copy-code.html">
+<!-- app styles -->
+<link rel="import" href="../styles/app-theme.html">
+
+<dom-module id="hitch-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+        height: 100%;
+      }
+      .appname {
+        @apply(--drop-shadow-12);
+        @apply(--hitch-branding);
+        /*width: 100%;*/
+        text-align: end;
+      }
+      .appname.after {
+        @apply(--hitch-branding-after);
+      }
+      .main-toolbar {
+        height: 128px;
+        align-items: center;
+        justify-content: center;
+      }
+      app-header {
+        background-color: var(--hitch-primary-color);
+      }
+      paper-icon-button {
+        color: var(--primary-icon-color);
+      }
+      app-header-layout {
+        height: 100%;
+      }
+      neon-animated-pages {
+        height: 100%;
+      }
+      home-view {
+        contain: strict;
+      }
+
+      .flex {
+        @apply(--layout-flex);
+      }
+      hitch-toast .copy-code {
+        margin-left: 16px;
+      }
+    </style>
+    <app-header-layout fullbleed>
+      <app-header shadow>
+        <template is="dom-if" if="[[!_computeIsPage(page, 'client')]]">
+          <app-toolbar class="main-toolbar">
+            <span>
+              <span class="appname">Hitch</span>
+              <span class="appname after">.on</span>
+            </span>
+          </app-toolbar>
+        </template>
+
+        <hitch-action-toolbar for="[[page]]">
+          <template is="dom-if" if="[[_computeIsPage(page, 'home')]]">
+            <span class="flex"></span>
+          </template>
+          <template is="dom-if" if="[[!_computeIsPage(page, 'home')]]">
+            <paper-icon-button icon="arrow-back" on-tap="goBack"></paper-icon-button>
+            <span class="flex"></span>
+            <hitch-share-code></hitch-share-code>
+          </template>
+          <paper-icon-button icon="settings" on-tap="goSettings"></paper-icon-button>
+        </hitch-action-toolbar>
+
+      </app-header>
+
+      <neon-animated-pages selected="[[page]]" attr-for-selected="view">
+        <home-view
+          view="home"
+          server-options="{{serverOptions}}"
+          client-options="{{clientOptions}}">
+        </home-view>
+
+        <client-view
+          view="client"
+          client-options="{{clientOptions}}"
+          on-navigate-back="goBack">
+        </client-view>
+
+        <host-view
+          view="host"
+          server-options="{{serverOptions}}"
+          on-hitch-session-code-change="_onHitchSessionCodeChange">
+        </host-view>
+
+        <choose-screen-view view="choose-screen"></choose-screen-view>
+
+        <settings-view view="settings"></settings-view>
+      </neon-animated-pages>
+    </app-header-layout>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'hitch-app',
+
+        properties: {
+          page: String,
+
+          /**
+           * Wether all lazy resources are loaded
+           */
+          loadComplete: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
+
+          /**
+           *
+           */
+          minimumLoadScreenTime: {
+            type: Number,
+            value: 500
+          },
+
+          clientReady: {
+            type: Boolean,
+            value: false
+          },
+
+          clientConnecting: {
+            type: Boolean,
+            value: false
+          }
+        },
+
+        get layout() {
+          return this.$$('app-header-layout');
+        },
+
+        get headerLayoutContentContainer() {
+          return this.layout.root.querySelector('#contentContainer');
+        },
+
+        get toast() {
+          return this.root.querySelector('hitch-toast');
+        },
+
+        ready: function() {
+          this.set('page', this.page || 'home');
+        },
+
+        observers: [
+          '_pageChanged(page)'
+        ],
+
+        _pageChanged: function(page) {
+          if (page === 'client') {
+            this.headerLayoutContentContainer.style.paddingTop = '64px';
+          } else if (page === 'host') {
+            this.headerLayoutContentContainer.style.paddingTop = '168px';
+          } else {
+            this.headerLayoutContentContainer.style.paddingTop = '192px';
+          }
+          var resolveUrl = this.resolveUrl(`views/${page}-view.html`);
+          this.importHref(resolveUrl, function() {
+            if (!this.loadComplete) {
+              this._ensureLazyLoaded();
+            }
+          }.bind(this));
+        },
+
+        _ensureLazyLoaded: function() {
+          // load lazy resources after render and set `loadComplete` when done.
+          Polymer.RenderStatus.afterNextRender(this, function() {
+            this.importHref(this.resolveUrl('lazy-resources.html'), function() {
+              // Register service worker if supported.
+              if ('serviceWorker' in navigator) {
+                // TODO: Create service-worker.js script when building release
+                navigator.serviceWorker.register('service-worker.js');
+              }
+              this._notifyNetworkStatus();
+              this.async(function() {
+                this.set('loadComplete', true);
+                this.fire('load-complete', true);
+              }, this.minimumLoadScreenTime);
+            });
+          });
+        },
+
+        _notifyNetworkStatus: function() {
+          var oldOffline = this.offline;
+          this.offline = !navigator.onLine;
+          // Show the snackbar if the user is offline when starting a new session
+          // or if the network status changed.
+          if (this.offline || (!this.offline && oldOffline === true)) {
+            if (!this._networkSnackbar) {
+              this._networkSnackbar = document.createElement('shop-snackbar');
+              Polymer.dom(this.root).appendChild(this._networkSnackbar);
+            }
+            Polymer.dom(this._networkSnackbar).innerHTML = this.offline ?
+                'You are offline' : 'You are online';
+            this._networkSnackbar.open();
+          }
+        },
+
+        _computeIsPage: function(page, wanted) {
+          if (page === wanted) {
+            return true;
+          }
+          return false;
+        },
+
+        go: function(view) {
+          this.set('_previousPage', this.page);
+          this.set('page', view);
+          document.dispatchEvent(new CustomEvent('on-' + view + '-view'));
+        },
+
+        goBack: function() {
+          this.go(this._previousPage);
+        },
+
+        goSettings: function() {
+          this.go('settings');
+        },
+
+        copyCode: function(event) {
+          hitchon.clipboard.copy(this.code, 'client-code');
+        }
+      });
+    })();
+  </script>
+</dom-module>

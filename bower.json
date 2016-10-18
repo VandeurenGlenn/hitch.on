@@ -37,6 +37,8 @@
     "paper-dialog": "^1.1.0",
     "paper-dialog-scrollable": "^1.1.5",
     "paper-menu": "^1.2.2",
-    "paper-item": "^1.2.1"
+    "paper-item": "^1.2.1",
+    "paper-tabs": "^1.6.2",
+    "iron-pages": "^1.0.8"
   }
 }

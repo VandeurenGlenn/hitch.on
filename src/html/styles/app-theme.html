@@ -1,0 +1,35 @@
+<style is="custom-style">
+  :root {
+    --primary-background-color: #bfc3c4;
+
+    --primary-icon-color: #FEFEFE;
+    --hitch-primary-color: #263238;
+    --hitch-secondary-color: #4d575d;
+
+    --hitch-branding: {
+      @apply(--paper-font-common);
+      color: var(--paper-grey-100);
+      font-size: 40px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    --hitch-branding-after: {
+      @apply(--paper-font-common);
+      color: var(--paper-grey-100);
+      font-size: 22px;
+      text-transform: lowercase;
+      content: '.on';
+    }
+
+    --drop-shadow-12: {
+      -webkit-filter: drop-shadow(12px 12px 7px rgba(0,0,0,0.5));
+      filter: drop-shadow(12px 12px 7px rgba(0,0,0,0.5));
+    }
+
+    --drop-shadow-2: {
+      -webkit-filter: drop-shadow(2px 2px 7px rgba(0,0,0,0.5));
+      filter: drop-shadow(2px 2px 7px rgba(0,0,0,0.5));
+    }
+  }
+</style>

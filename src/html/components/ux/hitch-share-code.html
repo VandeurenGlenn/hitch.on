@@ -1,0 +1,170 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<dom-module id="hitch-share-code">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        pointer-events: none;
+        will-change: opacity;
+        z-index: 105;
+        transform: translateX(100%);
+      }
+      :host([opened]) {
+        @apply(--shadow-elevation-6dp);
+      }
+      :host([active]) {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(0);
+        transition: opacity ease-in 0.32s transform ease-in 0.32s;
+      }
+      .code-bar {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        height: 40px;
+        align-items: center;
+        color: var(--primary-icon-color);
+      }
+      .dropdown {
+        opacity: 0;
+        height: 0;
+        will-change: opacity, height;
+        pointer-events: none;
+        background: var(--primary-background-color);
+        z-index: 100;
+        display: block;
+      }
+      :host([opened][active]) .dropdown {
+        opacity: 1;
+        height: auto;
+        transition: height ease-in 0.4s;
+        pointer-events: auto;
+      }
+      :host([opened][active]) .code-bar {
+        background: var(--hitch-secondary-color);
+      }
+      paper-item, iron-icon, .code-bar {
+        cursor: pointer;
+      }
+      iron-icon {
+        margin-left: 16px;
+      }
+      iron-icon.close {
+        margin-left: 32px;
+      }
+    </style>
+    <div class="code-bar" on-tap="toggleOpened">
+      [[code]]
+      <template is="dom-if" if="[[!opened]]">
+        <iron-icon icon="share"></iron-icon>
+      </template>
+      <template is="dom-if" if="[[opened]]">
+        <iron-icon icon="close" class="close"></iron-icon>
+      </template>
+    </div>
+
+    <div class="dropdown">
+      <paper-item title="Copy to clipboard" on-tap="copy">Copy</paper-item>
+      <paper-item title="Share on Google+">Google+</paper-item>
+    </div>
+    <!-- <iron-selector selected="0">
+      <paper-icon-button icon="copy" on-tap="copy"></paper-icon-button>
+    </iron-selector> -->
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'hitch-share-code',
+
+        properties: {
+          active: {
+            type: Boolean,
+            reflectToAttribute: true,
+            observer: '_activeChanged',
+            value: false
+          },
+
+          opened: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
+
+          code: String,
+
+          _height: Number
+        },
+
+        get dropdown() {
+          return this.root.querySelector('.dropdown');
+        },
+
+        attached: function() {
+          document.addEventListener('hitch-session-code-change',
+            this._onHitchSessionChange.bind(this));
+        },
+
+        _activeChanged: function(active) {
+          if (active) {
+            this._calculateHeight();
+          }
+        },
+
+        _onHitchSessionChange: function(event) {
+          this.code = event.detail;
+          if (this.code) {
+            this.set('active', true);
+            return;
+          }
+          this.set('active', false);
+        },
+
+        _calculateHeight: function() {
+          // open the dropdown so we can measure its height
+          this.set('opened', true);
+          this._height = this.dropdown.offsetHeight;
+          this._height -= 48;
+          // close the dropdown again so we can animate it
+          this.set('opened', false);
+        },
+
+        toggleOpened: function(event) {
+          if (this.opened) {
+            event.preventDefault();
+            if (event.target.classList.contains('close')) {
+              this.close();
+            }
+          } else {
+            this.open();
+          }
+        },
+
+        open: function() {
+          if (!this.opened) {
+            this.set('opened', true);
+            this.style.transform = 'translateY(' + this._height + 'px)';
+          }
+        },
+
+        close: function() {
+          this.set('opened', false);
+          this.style.transform = 'translateY(0)';
+        },
+
+        copy: function(event) {
+          hitchon.clipboard.copy(this.code, 'client-code');
+          this.close();
+        }
+      });
+    })();
+  </script>
+</dom-module>
