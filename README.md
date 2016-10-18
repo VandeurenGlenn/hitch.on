@@ -15,7 +15,14 @@ Install Tend
 ```sh
 npm install tend -g
 ```
+#### Getting Hitch.on
+##### zip
+download the [zip](https://github.com//VandeurenGlenn/hitch.on/archive/master.zip)
 
+##### git
+```sh
+git clone https://github.com/VandeurenGlenn/hitch.on.git
+```
 ## Running Hitch.on
 ### Run
 ```sh
