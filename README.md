@@ -26,3 +26,15 @@ npm install tend -g
 ```sh
   tend
 ```
+
+## State Of Development
+- [x] user interface
+- [x] screen sharing
+- [x] copy session code
+- [ ] share session code
+- [ ] mouse control
+- [ ] keyboard control
+- [ ] file sharing
+- [ ] chat
+- [ ] video chat
+- [ ] stream-board (record streams)
