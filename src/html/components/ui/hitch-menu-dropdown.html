@@ -1,0 +1,176 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<dom-module id="hitch-menu-dropdown">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        pointer-events: none;
+        will-change: opacity;
+        z-index: 105;
+        transform: translateX(100%);
+        /*height: 40px;
+        width: 40px;*/
+        color: var(--dropdown-color);
+      }
+      :host([active]) {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(0);
+        transition: opacity ease-in 0.32s transform ease-in 0.32s;
+      }
+      :host([shown]) {
+        @apply(--shadow-elevation-6dp);
+      }
+      .button-container {
+        /*display: flex;
+        flex-direction: row;*/
+        /*width: 100%;
+        height: 100%;*/
+        /*width: 48px;*/
+        align-items: center;
+        color: var(--primary-icon-color);
+        padding: 8px;
+        box-sizing: border-box;
+      }
+      .dropdown-container {
+        /*position: fixed;*/
+        opacity: 0;
+        height: 0;
+        width: 0;
+        will-change: opacity, height;
+        pointer-events: none;
+        background: var(--dropdown-background);
+        z-index: 105;
+        display: block;
+        @apply(--shadow-elevation-6dp);
+      }
+      :host([shown][active]) .dropdown-container {
+        padding: 8px;
+        box-sizing: border-box;
+        opacity: 1;
+        height: auto;
+        transition: height ease-in 0.4s;
+        pointer-events: auto;
+      }
+      :host([shown]) .button-container {
+        background: var(--dropdown-open-background);
+      }
+      iron-icon, .button-container, .dropdown-container {
+        pointer-events: auto;
+        cursor: pointer;
+      }
+      :host([shown]) .dropdown-container {
+        min-width: 256px;
+      }
+    </style>
+    <div class="button-container">
+      <template is="dom-if" if="[[!opened]]">
+        <content select=".menu-button"></content>
+      </template>
+    </div>
+
+    <div class="dropdown-container">
+      <content select="[dropdown-content], .dropdown-content"></content>
+    </div>
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'hitch-menu-dropdown',
+
+        properties: {
+
+          opened: {
+            type: Boolean,
+            value: false
+          },
+
+          active: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
+
+          shown: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          },
+
+          _height: Number,
+
+          offsetRight: {
+            type: String,
+            value: '0'
+          },
+
+          top: {
+            type: Number,
+            value: 9
+          },
+
+          offsetLeft: Number
+        },
+
+        observers: [
+          '_openedChanged(opened, active)'
+        ],
+
+        get dropdown() {
+          return this.root.querySelector('.dropdown-container');
+        },
+
+        _openedChanged: function(opened, active) {
+          if (opened && active) {
+            // if (!this._height) {
+            // }
+            this.open();
+          } else if (active) {
+            this.close();
+          }
+        },
+
+        _calculateHeight: function() {
+          return new Promise(resolve => {
+            // get the current position
+            this._top = this.offsetTop;
+            this._left = this.offsetParent.offsetLeft;
+            this._height = this.offsetHeight;
+            this._width = this.offsetWidth;
+            // open the dropdown so we can measure its height
+            this.set('shown', true);
+            this._dwidth = this.dropdown.offsetWidth;
+            // close the dropdown again so we can animate it
+            this.set('shown', false);
+            resolve();
+          });
+        },
+
+        open: function() {
+          this._calculateHeight().then(() => {
+            this.dropdown.style.position = 'fixed';
+            this.dropdown.style.top = (this._top + this._height + this.top) + 'px';
+            if (this.offsetRight) {
+              this.dropdown.style.right = this.offsetRight + 'px';
+            } else {
+              this.dropdown.style.left = this._left + 'px';
+            }
+            // this.style.transform = 'translateY(' + this._height + 'px)';
+            // this.style.width = this._dwidth + 'px';
+            this.set('shown', true);
+          });
+        },
+
+        close: function() {
+          this.set('shown', false);
+          // this.style.transform = 'translateY(0)';
+        },
+      });
+    })();
+  </script>
+</dom-module>
