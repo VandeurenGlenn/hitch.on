@@ -13,6 +13,8 @@
 <link rel="import" href="ux/hitch-action-toolbar.html">
 <link rel="import" href="ux/hitch-toast.html">
 <link rel="import" href="ux/hitch-copy-code.html">
+<link rel="import" href="ux/hitch-user-menu.html">
+
 <!-- app styles -->
 <link rel="import" href="../styles/app-theme.html">
 
@@ -80,7 +82,9 @@
             <span class="flex"></span>
             <hitch-share-code></hitch-share-code>
           </template>
-          <paper-icon-button icon="settings" on-tap="goSettings"></paper-icon-button>
+          <hitch-user-menu avatar="[[user.profile_picture]]" username="[[user.username]]">
+            <paper-icon-button icon="settings" on-tap="goSettings" class="action-button"></paper-icon-button>
+          </hitch-user-menu>
         </hitch-action-toolbar>
 
       </app-header>
