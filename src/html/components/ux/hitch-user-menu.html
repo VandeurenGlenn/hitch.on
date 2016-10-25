@@ -1,0 +1,108 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button-light.html">
+<link rel="import" href="../ui/hitch-menu-dropdown.html">
+
+
+<dom-module id="hitch-user-menu">
+  <template>
+    <style>
+      :host {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+      img {
+        border-radius: 50%;
+        outline: none;
+        border: none;
+        background: rgba(225, 225, 225, 0.24);
+      }
+      button, img {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+      }
+      .dropdown-content-container {
+        padding-bottom: 8px;
+      }
+      .dropdown-content-container::after {
+        content: '';
+        display: block;
+        width: 100%;
+        border-top: solid 1px rgba(225, 225, 225, 0.78);
+      }
+      .action-buttons {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      hitch-menu-dropdown {
+        --dropdown-background: var(--hitch-secondary-color);
+        --dropdown-open-background: var(--hitch-secondary-color);
+        --dropdown-color: var(--primary-text-color);
+      }
+      .username {
+        padding: 0 8px;
+      }
+      .flex {
+        flex: 1;
+        width: 100%;
+      }
+    </style>
+
+    <hitch-menu-dropdown active="[[_computeActive(avatar)]]">
+      <button is="paper-icon-button-light" on-tap="toggleMenu" class="menu-button">
+        <img src="[[avatar]]" alt="[[username]]"/>
+      </button>
+      <div class="dropdown-content">
+        <div class="dropdown-content-container">
+        </div>
+        <div class="action-buttons">
+          <div class="username">
+            [[username]]
+          </div>
+          <span class="flex"></span>
+          <content select=".action-button"></content>
+        </div>
+      </div>
+    </hitch-menu-dropdown>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'hitch-user-menu',
+
+        properties: {
+          avatar: String,
+          username: String,
+          disabled: {
+            type: Boolean,
+            reflectToAttribute: true,
+            value: false
+          }
+        },
+
+        get dropdown() {
+          if (!this._dropdown) {
+            this._dropdown = this.root.querySelector('hitch-menu-dropdown');
+          }
+          return this._dropdown;
+        },
+
+        toggleMenu: function() {
+          this.dropdown.opened = !this.dropdown.opened;
+        },
+
+        _computeActive: function(av) {
+          if (av) {
+            return true;
+          }
+          return false;
+        }
+      });
+    })();
+  </script>
+</dom-module>
