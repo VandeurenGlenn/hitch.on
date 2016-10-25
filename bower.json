@@ -39,6 +39,7 @@
     "paper-menu": "^1.2.2",
     "paper-item": "^1.2.1",
     "paper-tabs": "^1.6.2",
-    "iron-pages": "^1.0.8"
+    "iron-pages": "^1.0.8",
+    "custom-elements": "webcomponents/custom-elements#^1.0.0-alpha.3"
   }
 }
