@@ -1,29 +1,17 @@
 'use strict';
-import Server from './lib/server';
-import Client from './lib/client';
-import Connection from './lib/connection/connection';
-import {ipcRenderer} from 'electron';
-import DesktopCapturer from './lib/desktop-capturer';
-import Clipboard from './lib/integration/clipboard'
 
-const desktopCapturer = new DesktopCapturer();
+import supportsCustomElements from './lib/helpers/supports-custom-elements';
+import loadScript from './lib/helpers/load-script';
+import Hitchon from './lib/hitch-on';
 
-var hitchon = window.hitchon || {};
-hitchon.user = hitchon.user || {settings: {}};
-hitchon.client = new Client();
-hitchon.server = new Server();
-hitchon.connection = new Connection();
-hitchon.desktopCapturer = new DesktopCapturer();
-hitchon.clipboard = new Clipboard();
-hitchon.desktopCapturer.on('stream-update', (stream) => {
-  hitchon.server.post('stream', stream);
-  document.dispatchEvent(new CustomEvent('stream-update', {detail: stream}));
+// check if browser has native customElements v1 support & import when not supported
+supportsCustomElements().then(supported => {
+  if (!supported) {
+    let src = './bower_components/custom-elements/custom-elements.min.js';
+    loadScript(src).then(() => {
+      new Hitchon();
+    });
+  } else {
+    new Hitchon();
+  }
 });
-document.addEventListener('screen-select-update', (event) => {
-  hitchon.desktopCapturer.stream(event.detail);
-});
-// hitchon.server.on('capturer', (stream) => {
-//   hitchon.client.stream(stream);
-// });
-
-window.hitchon = hitchon;
