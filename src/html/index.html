@@ -24,7 +24,7 @@
       // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
-        lazyRegister: true
+        lazyRegister: 'max'
       };
       var webComponentsSupported = ('registerElement' in document
           && 'import' in document.createElement('link')
@@ -37,31 +37,24 @@
       }
     </script>
 
-    <link rel="import" href="components/ux/splash-screen.html">
-
     <link rel="import" href="components/hitch-app.html">
 
   </head>
   <style>
-    html, body {
+    html, body, hitch-app {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
       margin: 0;
+      padding: 0;
     }
   </style>
   <body>
     <hitch-app></hitch-app>
-    <splash-screen></splash-screen>
   </body>
   <script async>
-    var app = document.querySelector('hitch-app');
-    var splash = document.querySelector('splash-screen');
-    app.addEventListener('load-complete', function() {
-      splash.set('show', false);
-    });
     require('./../renderer');
   </script>
 </html>
