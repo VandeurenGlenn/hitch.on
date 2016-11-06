@@ -5,4 +5,4 @@ node_modules
 src/html/bower_components
 
 # App
-app
+dist

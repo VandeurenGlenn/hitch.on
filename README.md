@@ -9,20 +9,19 @@ Electron desktop remote app.
 ### Prerequisites
 - Nodejs
 
-#### Global dependencies
-##### Tend (file watcher)
-Install Tend
-```sh
-npm install tend -g
-```
-#### Getting Hitch.on
-##### zip
+### Getting Hitch.on
+#### zip
 download the [zip](https://github.com//VandeurenGlenn/hitch.on/archive/master.zip)
 
-##### git
+#### git
 ```sh
 git clone https://github.com/VandeurenGlenn/hitch.on.git
 ```
+#### Install dependencies
+```sh
+npm install
+```
+
 ## Running Hitch.on
 ### Run
 ```sh
