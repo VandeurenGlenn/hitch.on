@@ -11,7 +11,7 @@ export default class AppController {
 
   ready() {
     app.setName('Hitch.on');
-    browser.createWindow('main', 'html/index');
+    browser.createWindow('main', 'app/html/index');
   }
 
   quit() {
