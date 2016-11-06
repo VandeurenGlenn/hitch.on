@@ -166,6 +166,7 @@
 
         ready: function() {
           this.set('page', this.page || 'home');
+          document.addEventListener('user-login', this._onUserLogin.bind(this))
         },
 
         observers: [
@@ -245,6 +246,13 @@
 
         copyCode: function(event) {
           hitchon.clipboard.copy(this.code, 'client-code');
+        },
+
+        _onUserLogin: function (event) {
+          firebase.database().ref('users/' + event.detail).once('value', snapshot => {
+            this.user = snapshot.val()
+          });
+
         }
       });
     })();
