@@ -4,6 +4,7 @@
 var Hitch = Hitch || {};
 Hitch.ClientBehavior = {
   properties: {
+    class: String,
     code: {
       type: Number,
       value: null
@@ -21,6 +22,10 @@ Hitch.ClientBehavior = {
     }
   },
 
+  observers: [
+    '_handleMouseListener(class, loading, streaming)'
+  ],
+
   get hitchon() {
     return window.hitchon;
   },
@@ -33,9 +38,26 @@ Hitch.ClientBehavior = {
     return this.root.querySelector('video');
   },
 
+  get _mouseListener() {
+    return this.root.querySelector('mouse-listener');
+  },
+
+  _handleMouseListener: function(cls, loading, streaming) {
+    if (!this._mouseListener) {
+      let mouseListener = document.createElement('mouse-listener');
+      this.root.appendChild(mouseListener);
+    } else if (cls.includes('iron-selected') &&
+    !loading && this._mouseListener && streaming) {
+      this._mouseListener.start();
+    } else if (!cls.includes('iron-selected') &&
+    this._mouseListener || loading || !streaming) {
+      this._mouseListener.stop();
+    }
+  },
+
   startClient: function() {
     this.set('loading', true);
-    this.client.start(this.code, '0.tcp.ngrok.io');
+    this.client.start(this.code);
     document.addEventListener('capturer-update', this._onCapturerUpdate.bind(this));
   },
 
