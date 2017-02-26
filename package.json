@@ -8,6 +8,7 @@
     "install": "npm rebuild --runtime=electron --target=1.4.4 --disturl=https://atom.io/download/atom-shell --abi=50 && npm run build",
     "start": "electron ./dist",
     "start-dev": "npm run build && electron ./dist/index.js",
+    "rebuild": "npm rebuild --runtime=electron --target=1.6.1 --disturl=https://atom.io/download/atom-shell --abi=53",
     "build": "sh build/build.sh"
   },
   "repository": {
