@@ -16,6 +16,7 @@
     <collab-client-connecting connecting="[[connecting]]"></collab-client-connecting>
     <template is="dom-if" if="[[serverRunning]]">
       <collab-board screen-sources="[[screenSources]]" window-sources="[[windowSources]]" sources-query="{{sourcesQuery}}"></collab-board>
+      <collab-session-data data="{{data}}"></collab-session-data>
     </template>
 
   </template>
@@ -82,6 +83,10 @@
           return hitchon.desktopCapturer;
         },
 
+        get collabSessionEl() {
+          return this.root.querySelector('collab-session-data');
+        },
+
         attached: function() {
           document.addEventListener('client-ready', this._onClientReady.bind(this));
           document.addEventListener('screen-select', this._onSCreenSelect.bind(this));
@@ -107,13 +112,6 @@
 
           }
           return;
-        },
-
-        _computeShowCode: function(code, connecting) {
-          if (code && connecting) {
-            return true;
-          }
-          return false;
         },
 
         startServer: function() {

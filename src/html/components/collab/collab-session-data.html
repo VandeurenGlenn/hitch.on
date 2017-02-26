@@ -1,0 +1,27 @@
+<script>
+  class CollabSessionData extends HTMLElement {
+
+    static get is() { return 'collab-session-data' }
+
+    constructor() {
+      super();
+
+      // bind methods
+      this._onStartSession = this._onStartSession.bind(this);
+
+      document.addEventListener('hitch-session-code-change', this._onStartSession);
+    }
+
+    _onStartSession(event) {
+      this.startSession(event.detail);
+    }
+
+    startSession(code) {
+      firebase.ref('sessions/' + code).once('value', snapshot => {
+        this.data = snapshot.val();
+      })
+    }
+  };
+
+  customElements.define(CollabSessionData.is, CollabSessionData);
+</script>
