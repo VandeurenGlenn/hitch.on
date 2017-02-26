@@ -3,28 +3,46 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <!-- collab elements -->
 <link rel="import" href="collab-action.html">
+<link rel="import" href="../ui/custom-section.html">
+
 
 <dom-module id="collab-actions">
   <template>
     <style>
       :host {
         display: block;
-        position: absolute;
-        bottom: 48px;
-        left: 0;
-        right: 0;
         background: #FEFEFE;
         border: 1px solid rgba(0, 0, 0, 0.24);
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 48px;
+        right: 0;
       }
       iron-pages {
         border-top: 1px solid rgba(0, 0, 0, 0.24);
+        width: 100%;
+        height: 100%;
+      }
+      custom-section[name="screen"].iron-selected,
+      custom-section[name="window"].iron-selected {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        height: 100%;
+        width: 100%;
+      }
+      custom-section {
+        overflow: auto;
+        height: 100%;
+        display: block;
       }
     </style>
     <template is="dom-if" if="[[action]]">
       <paper-icon-button icon="close" on-tap="close"></paper-icon-button>
       <iron-pages selected="[[action]]" attr-for-selected="name">
         <template is="dom-repeat" items="[[actions]]" as="action">
-          <section name="[[action.name]]">
+          <custom-section name="[[action.name]]">
             <template is="dom-if" if="[[!_computeHasItems(action.items)]]">
               <collab-action name="[[action.name]]"></collab-action>
             </template>
@@ -33,7 +51,7 @@
                 <collab-action name="[[action.name]]" action="[[item]]"></collab-action>
               </template>
             </template>
-          </section>
+          </custom-section>
         </template>
       </iron-pages>
     </template>

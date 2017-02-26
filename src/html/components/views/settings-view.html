@@ -16,12 +16,11 @@
         is: 'settings-view',
 
         ready: function() {
-
-            var connection = this.hitchon.connection;
-            connection.info().then(response => {
-              this.host = response.ip;
-              this.port = response.port;
-            });
+          var connection = hitchon.connection;
+          connection.info().then(response => {
+            this.host = response.ip;
+            this.port = response.port;
+          });
         }
       });
     })();

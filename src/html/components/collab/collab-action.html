@@ -7,17 +7,35 @@
       :host {
         display: block;
       }
-      .screen-item {
+      :host(.screen) {
         display: flex;
         flex-direction: row;
         padding: 16px 32px;
         box-sizing: border-box;
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        float: left;
+      }
+      :host(.screen) img {
+        z-index: 0;
+      }
+      @media (min-width: 1280px) {
+        :host(.screen) {
+          width: calc(100% / 4);
+        }
       }
       @media (min-width: 960px) {
-        .screen-item {
-          width: 50%;
-          float: left;
+        :host(.screen) {
+          width: calc(100% / 3);
+        }
+      }
+      @media (min-height: 720px) {
+        :host(.screen) {
+          height: calc(100% / 3);
+        }
+      }
+      @media (min-height: 540px) {
+        :host(.screen) {
+          height: calc(100% / 2);
         }
       }
     </style>
@@ -62,8 +80,10 @@
 
         _computeTemplate: function(name, wanted, wanted2) {
           if (name === wanted || name === wanted2) {
+            this.classList.add(wanted);
             return true;
           }
+          this.classList.remove(wanted);
           return false;
         },
 
