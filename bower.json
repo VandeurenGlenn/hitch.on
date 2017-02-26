@@ -40,6 +40,7 @@
     "paper-item": "^1.2.1",
     "paper-tabs": "^1.6.2",
     "iron-pages": "^1.0.8",
-    "custom-elements": "webcomponents/custom-elements#^1.0.0-alpha.3"
+    "custom-elements": "webcomponents/custom-elements#^1.0.0-alpha.3",
+    "backed": "^0.0.1"
   }
 }
