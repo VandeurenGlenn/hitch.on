@@ -1,0 +1,33 @@
+{
+  "name": "hitch.on",
+  "version": "0.0.0",
+  "description": "Connect with each other",
+  "main": "./main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://vandeurenglenn@gmail.com"
+  },
+  "keywords": [
+    "remote",
+    "connect",
+    "hitch",
+    "on",
+    "hitchon",
+    "hitch.on",
+    "meet",
+    "meeting"
+  ],
+  "author": "vandeurenglenn <vandeurenglenn@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "connect": "^3.5.0",
+    "electron-updater": "^1.8.1",
+    "express": "^4.14.0",
+    "firebase": "^3.5.1",
+    "localtunnel": "^1.8.1",
+    "ngrok": "^2.2.3",
+    "openport": "0.0.4",
+    "robotjs": "^0.4.5",
+    "socket.io": "^1.5.1"
+  }
+}

@@ -5,5 +5,8 @@ node_modules
 src/bower_components
 
 # App
-app
+app/bower_components
+app/**/**/*.html
+app/**/**/*.js
+app/**/**/*.png
 dist
