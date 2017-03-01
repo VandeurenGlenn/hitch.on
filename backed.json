@@ -1,0 +1,39 @@
+{
+  "bundles": [
+    {
+      "src": "src/main.js",
+      "dest": "app/main.js"
+    }, {
+      "src": "src/renderer.js",
+      "dest": "app/renderer.js"
+    }
+  ],
+  "format": "cjs",
+  "sources": [
+    {
+      "src": [
+        "src/{behaviors,components,styles,sources}/**/**/*",
+        "src/index.html",
+        "src/bower_components/**/**"
+      ],
+      "dest": "app"
+    }
+  ],
+  "server": {
+    "use": [],
+    "demo": "app"
+  },
+  "babel": {
+    "presets": [
+      [
+        "es2015",
+        {
+          "modules": false
+        }
+      ]
+    ],
+    "plugins": [
+      "external-helpers"
+    ]
+  }
+}

@@ -2,7 +2,7 @@
 node_modules
 
 # Bower
-src/html/bower_components
+src/bower_components
 
 # App
-dist
+app

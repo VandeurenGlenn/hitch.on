@@ -28,14 +28,12 @@ export default class FirebaseController extends BaseController {
     return window.firebase;
   }
 
-  set _user(user) {
-    if (user && user.isAnonymous) {
-    }
+  set user(value) {
+    this._user = value;
   }
 
   get user() {
-    this._user = firebase.auth().currentUser;
-    return this._user || JSON.parse(localStorage.getItem(`firebase:authUser:${this.config.apiKey}:[DEFAULT]`));
+    return firebase.auth().currentUser;
   }
 
   /**
@@ -50,45 +48,16 @@ export default class FirebaseController extends BaseController {
   }
 
   _onAuthStateChanged(user) {
-    if (user) {
-      // User is signed in.
-      var isAnonymous = user.isAnonymous;
-      var uid = user.uid;
-
-      if (isAnonymous && user.email === null) {
-        let newPassword = Math.random().toString(36).slice(-8);
-        let newName = Math.random().toString(36).slice(-8);
-        let newEmail = `${newName}@hitch.on`;
-
-        user.updatePassword(newPassword).then(() => {
-          console.log(newPassword);
-          // Update successful.
-        }, (error) => {
-          this.error(error);
-        });
-
-        user.updateEmail(newEmail).then(() => {
-          console.log(newEmail);
-          // Update successful.
-        }, (error) => {
-          this.error(error);
-        });
-
-        this.writeUserData(uid, newName, newEmail, this.randomAvatar());
+    firebase.database().ref(`users/${user.uid}`).once('value', snapshot => {
+      let value = snapshot.val();
+      if (value !== null) {
+        this.user = value;
+        this.dispatchEvent('user-login', value);
       } else {
-        firebase.database().ref('users/' + uid).once('value', (snapshot) => {
-          if (!new Boolean(snapshot.val())) {
-            this.writeUserData(uid, user.displayName, user.email, user.photoURL);
-          }
-        })
-
+        this.login();
+        this.createUser(user);
       }
-
-      this.dispatchEvent('user-login', uid);
-    } else {
-      // User is signed out.
-      // ...
-    }
+    });
   }
 
   randomAvatar() {
@@ -96,16 +65,35 @@ export default class FirebaseController extends BaseController {
     return `sources/avatar-${num}.png`;
   }
 
-  writeUserData(userId, name, email, imageUrl) {
-    let user = {
-      username: name,
-      email: email,
-      profile_picture : imageUrl
-    };
-    if (user.name && user.email && user.profile_picture) {
-      firebase.database().ref('users/' + userId).set(user);
-    }
+  createUser(user) {
+    if (user.isAnonymous) {
+      let newPassword = Math.random().toString(36).slice(-8);
+      let newName = Math.random().toString(36).slice(-8);
+      let newEmail = `${newName}@hitch.on`;
 
-    // localStorage.setItem('hitchon-user-uid', userId);
+      user.updatePassword(newPassword).then(() => {
+        // Update successful.
+      }, (error) => {
+        this.error(error);
+      });
+
+      user.updateEmail(newEmail).then(() => {
+        // Update successful.
+      }, (error) => {
+        this.error(error);
+      });
+
+      return this.writeUserData(user.uid, newName, newEmail, this.randomAvatar());
+    }
+  }
+
+  writeUserData(uid, name, email, imageUrl) {
+     if (name !== null && email !== null && imageUrl !== null) {
+      firebase.database().ref('users/' + uid).set({
+        displayName: name,
+        email: email,
+        profile_picture : imageUrl
+      });
+    }
   }
 }

@@ -15,7 +15,6 @@ export default class Hitchon extends FirebaseController {
       window.hitchon = hitchon;
 
       requestIdleCallback(() => {
-        this.login();
         this._setupEventListeners();
       })
     });

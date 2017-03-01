@@ -249,9 +249,7 @@
         },
 
         _onUserLogin: function (event) {
-          firebase.database().ref('users/' + event.detail).once('value', snapshot => {
-            this.user = snapshot.val()
-          });
+          this.user = event.detail;
         }
       });
     })();

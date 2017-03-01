@@ -57,6 +57,8 @@
     <hitch-app></hitch-app>
   </body>
   <script async>
-    require('./../renderer');
+    requestIdleCallback(() => {
+      require('./renderer');
+    })
   </script>
 </html>

@@ -1,0 +1,40 @@
+version: 0.0.{build}
+
+platform:
+  - x64
+
+cache:
+  - node_modules
+  - app\node_modules
+  - '%APPDATA%\npm-cache'
+  - '%USERPROFILE%\.electron'
+
+init:
+  - git config --global core.autocrlf input
+
+install:
+  - ps: Install-Product node 6 x64
+  - git reset --hard HEAD
+  - npm install npm bower -g
+  - npm install electron-builder@next # force install next version to test electron-builder
+  - npm install
+  - npm prune
+
+build_script:
+  - node --version
+  - npm --version
+  - npm run dist
+
+test: off
+
+deploy:
+  release: hitch.on-v$(appveyor_build_version)
+  provider: GitHub
+  auth_token:
+    secure: kEjNINHxuwcrmeVyEPwKDV1M/XbuBX3p66W/Uf3LJT2vXIHtAqCkxAThB/Guk3TI
+  artifact: /.*\.nupkg/
+  draft: false
+  prerelease: false
+  on:
+    branch: master
+    appveyor_repo_tag: true

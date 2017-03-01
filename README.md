@@ -23,14 +23,10 @@ npm install
 ```
 
 ## Running Hitch.on
+
 ### Run
 ```sh
   npm run start-dev
-```
-
-### Start file watcher
-```sh
-  tend
 ```
 
 ## State Of Development
@@ -44,3 +40,4 @@ npm install
 - [ ] chat
 - [ ] video chat
 - [ ] stream-board (record streams)
+- [ ] build for win, mac & linux

@@ -1,0 +1,48 @@
+<link rel="import" href="../bower_components/polymer/polymer-micro.html">
+<dom-module id="js-import">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'js-import',
+        properties: {
+          href: {
+            type: String,
+            observer: '_import'
+          }
+        },
+
+        _import: function(change) {
+          if (change !== this._oldChange) {
+            this.import();
+            this._oldChange = change;
+          }
+        },
+
+
+
+        import: function(src) {
+          return new Promise((resolve, reject) => {
+            var script = document.createElement('script');
+            script.src = src;
+            script.onload = resolve();
+            try {
+              this.root.appendChild(script);
+            } catch (err) {
+              reject(err)
+            }
+          });
+        },
+      });
+    })();
+  </script>
+</dom-module>
