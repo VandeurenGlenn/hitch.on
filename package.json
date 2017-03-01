@@ -1,25 +1,26 @@
 {
   "build": {
-    "appId": "com.basicelements.hitch.on",
+    "appId": "org.basicelements.hitch.on",
     "mac": {
-      "app-category-type": "public.app-category.productivity"
+      "category": "public.app-category.productivity"
     }
   },
+  "main": "./app/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "install-app-deps && bower install",
     "install": "npm run postinstall && npm run rebuild",
-    "start": "electron ./app",
-    "start-dev": "npm run build && electron ./app",
+    "start": "electron ./app/main.js",
+    "start-dev": "npm run build && electron ./app/main.js",
     "rebuild": "cd app && npm rebuild --runtime=electron --target=1.6.1 --disturl=https://atom.io/download/atom-shell --abi=53",
     "build": "backed -b",
-    "pack": "build --dir",
-    "dist": "build",
-    "release": "build"
+    "pack": "npm run build && build --dir",
+    "dist": "npm run build && build",
+    "release": "npm run build && build"
   },
   "devDependencies": {
     "electron": "^1.6.1",
-    "electron-builder": "^14.5.1"
+    "electron-builder": "next"
   },
   "eslintConfig": {
     "globals": {

@@ -4,7 +4,7 @@ import findOpenPort from './connection/find-open-port';
 const {createServer} = require('net');
 const ngrok = require('ngrok');
 const robot = require('robotjs');
-
+const exec = require('child_process').exec;
 // import IoServer from './servers/io-server';
 
 export default class Server extends Events {
@@ -34,6 +34,7 @@ export default class Server extends Events {
 
 	stop() {
 		if (this.ngrokActive) {
+			this.ex.kill();
 			ngrok.disconnect();
 			this.server.close();
 		}
@@ -67,14 +68,35 @@ export default class Server extends Events {
 
 			this.server.listen(this.port, this.ip);
 
-			ngrok.connect({proto: 'tcp', addr: this.port}, (err, url) => {
-				if (err) {
-					reject(err);
-					return;
-				}
+			this.getNgrokURL().then(url => {
 				this.ngrokActive = true;
-				resolve(url);
+				resolve(url)
+			}).catch(() => {
+				this.ex = exec('ngrok tcp ' + this.port);
+				this.getNgrokURL().then(url => {
+					this.ngrokActive = true;
+					resolve(url)
+				});
 			});
+		});
+	}
+
+	getNgrokURL() {
+		return new Promise((resolve, reject) => {
+			const reqListener = event => {
+				let responseText = event.currentTarget.response;
+				const obj = JSON.parse(responseText);
+				if (obj.tunnels[0]) {
+					resolve(obj.tunnels[0].public_url);
+				} else {
+					reject();
+				}
+			}
+
+			var oReq = new XMLHttpRequest();
+			oReq.addEventListener('load', reqListener);
+			oReq.open("GET", 'http://127.0.0.1:4040/api/tunnels/');
+			oReq.send();
 		});
 	}
 

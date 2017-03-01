@@ -14,11 +14,9 @@ init:
 
 install:
   - ps: Install-Product node 6 x64
-  - git reset --hard HEAD
   - npm install npm bower -g
   - npm install electron-builder@next # force install next version to test electron-builder
   - npm install
-  - npm prune
 
 build_script:
   - node --version
