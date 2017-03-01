@@ -101,10 +101,12 @@ export default class Server extends Events {
 				let match = json.match(/\{(.*?)\}\}/g) || json.match(/\{(.*?)\}/g);
 				for (let obj of match) {
 					obj = JSON.parse(obj);
-					robot.moveMouseSmooth(obj.data.movementX, obj.data.movementY);
+					// disable mouse control untill fixed
+					// robot.moveMouseSmooth(obj.data.movementX, obj.data.movementY);
 				}
 			} else {
-				robot.moveMouseSmooth(json.data.movementX, json.data.movementY);
+				// disable mouse control untill fixed
+				// robot.moveMouseSmooth(json.data.movementX, json.data.movementY);
 			}
 		}
 	}
