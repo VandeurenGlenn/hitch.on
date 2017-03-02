@@ -36,3 +36,9 @@ deploy:
   on:
     branch: master
     appveyor_repo_tag: true
+
+notifications:
+  - provider: Slack
+    incoming_webhook:
+      secure: /GhSJfbd2kfRmNxFNRJlcynjHDf1lAMreK1OZGK/97F/fBkM6j7VPOKpMHaGpvqnALGeC9eNmuIhDmaemQ4zXZPl6oG7744o/tqIr9U1zO4=
+    channel: hitchon
