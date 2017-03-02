@@ -14,7 +14,7 @@ init:
 
 install:
   - ps: Install-Product node 6 x64
-  - npm install npm bower backed-cli -g
+  - npm install npm bower backed-cli@beta -g
   - npm install electron-builder@next # force install next version to test electron-builder
   - npm install
 
