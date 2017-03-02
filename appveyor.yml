@@ -14,7 +14,7 @@ init:
 
 install:
   - ps: Install-Product node 6 x64
-  - npm install npm bower -g
+  - npm install npm bower backed-cli -g
   - npm install electron-builder@next # force install next version to test electron-builder
   - npm install
 
@@ -30,7 +30,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: kEjNINHxuwcrmeVyEPwKDV1M/XbuBX3p66W/Uf3LJT2vXIHtAqCkxAThB/Guk3TI
-  artifact: /.*\.nupkg/
+  artifact: /.*\.exe/
   draft: false
   prerelease: false
   on:
