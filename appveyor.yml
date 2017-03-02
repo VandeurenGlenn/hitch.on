@@ -6,6 +6,7 @@ platform:
 cache:
   - node_modules
   - app\node_modules
+  - src\bower_components
   - '%APPDATA%\npm-cache'
   - '%USERPROFILE%\.electron'
 
