@@ -28,6 +28,6 @@
     "ngrok": "^2.2.3",
     "openport": "0.0.4",
     "robotjs": "^0.4.5",
-    "socket.io": "^1.5.1"
+    "socket.io": "^2.5.0"
   }
 }
