@@ -25,7 +25,7 @@
     "express": "^4.14.0",
     "firebase": "^3.5.1",
     "localtunnel": "^1.8.1",
-    "ngrok": "^2.2.3",
+    "ngrok": "^3.0.0",
     "openport": "0.0.4",
     "robotjs": "^0.4.5",
     "socket.io": "^1.5.1"
